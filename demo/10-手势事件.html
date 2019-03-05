@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Title</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .box {
+            width: 200px;
+            height: 200px;
+            background: pink;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+<div class="box"></div>
+<script>
+    window.onload = function () {
+        /*1. 理解移动端的手势事件*/
+        /*2. swipe swipeLeft  swipeRight swipeUp swipeDown */
+        /*3. 左滑和右滑手势怎么实现*/
+        var bindSwipeEvent = function (dom,leftCallback,rightCallback) {
+            /*手势的条件*/
+            /*1.必须滑动过*/
+            /*2.滑动的距离50px*/
+            var isMove = false;
+            var startX = 0;
+            var distanceX = 0;
+            dom.addEventListener('touchstart',function (e) {
+                startX = e.touches[0].clientX;
+            });
+            dom.addEventListener('touchmove',function (e) {
+                isMove = true;
+                var moveX = e.touches[0].clientX;
+                distanceX = moveX - startX;
+            });
+            dom.addEventListener('touchend',function (e) {
+                /*滑动结束*/
+                if(isMove && Math.abs(distanceX) > 50){
+                    if(distanceX > 0){
+                        rightCallback && rightCallback.call(this,e);
+                    }else{
+                        leftCallback && leftCallback.call(this,e);
+                    }
+                }
+                /*重置参数*/
+                isMove = false;
+                startX = 0;
+                distanceX = 0;
+            });
+        }
+        bindSwipeEvent(document.querySelector('.box'),function (e) {
+            console.log(this);
+            console.log(e);
+            console.log('左滑手势');
+        },function (e) {
+            console.log(this);
+            console.log(e);
+            console.log('右滑手势');
+        });
+
+    }
+</script>
+</body>
+</html>
